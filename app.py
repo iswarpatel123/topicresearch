@@ -13,7 +13,7 @@ load_dotenv()
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')  # Load from .env
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')  # Load from .env
 OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')  # Load from .env
-prompt = "Provide detailed takeaways (or in case of how to Search, step by step actions) relevant to Search. Don't use 'transcript says' or 'author says'. Search: "
+prompt = "Provide detailed takeaways (or in case of how to's, step by step actions) relevant to keyword. Don't use 'transcript says' or 'author says'. Keyword: "
 
 # Initialize YouTube API client
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
@@ -34,6 +34,23 @@ def search_videos(keyword, max_results):
 def get_transcript(video_id):
     transcript = YouTubeTranscriptApi.get_transcript(video_id)
     return ' '.join([entry['text'] for entry in transcript])
+
+# Function to split text into chunks
+def split_text_into_chunks(text, max_tokens=3072):
+    words = text.split()  # Split text into words
+    chunks = []
+    current_chunk = []
+
+    for word in words:
+        current_chunk.append(word)
+        if len(' '.join(current_chunk)) >= max_tokens:
+            chunks.append(' '.join(current_chunk[:-1]))
+            current_chunk = [word]
+
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+
+    return chunks
 
 # Function to summarize text
 def summarize_text(text):
@@ -58,13 +75,17 @@ def main():
             for video_id, title in videos:
                 video_url = f"https://www.youtube.com/watch?v={video_id}"
                 st.write(f"Fetching transcript for: {title} (ID: {video_id}) - [Watch Video]({video_url})")
-                time.sleep(5)
                 try:
                     transcript = get_transcript(video_id)
-                    summary = summarize_text(prompt + search_keyword + " title: " + title + " transcript: " + transcript)
-                    st.write(summary)
+                    chunks = split_text_into_chunks(transcript)
+                    summaries = []
+                    for chunk in chunks:
+                        summary = summarize_text(prompt + search_keyword + " title: " + title + " transcript: " + chunk)
+                        summaries.append(summary)
+                    st.write("\n".join(summaries))
                 except Exception as e:
                     st.write(f"Error fetching transcript for {title}: {e}")
+                time.sleep(5)
         else:
             st.write("Please enter a search keyword.")
 
