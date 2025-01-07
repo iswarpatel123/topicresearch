@@ -36,7 +36,7 @@ def get_transcript(video_id):
     return ' '.join([entry['text'] for entry in transcript])
 
 # Function to split text into chunks
-def split_text_into_chunks(text, max_tokens=3072):
+def split_text_into_chunks(text, max_tokens=4000):
     words = text.split()  # Split text into words
     chunks = []
     current_chunk = []
