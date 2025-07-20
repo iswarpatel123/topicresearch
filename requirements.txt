@@ -1,5 +1,5 @@
-google-api-python-client==2.39.0
-youtube-transcript-api==0.4.1
+google-api-python-client
+youtube-transcript-api
 streamlit
 openai
 python-dotenv

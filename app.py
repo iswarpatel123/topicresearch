@@ -24,7 +24,8 @@ client = OpenAI(
 )
 
 # Define system prompt and user prompt
-system_prompt = "You are an assistant that engages in extremely thorough, self-questioning reasoning. Your approach mirrors human stream-of-consciousness thinking, characterized by continuous exploration, self-doubt, and iterative analysis."
+# system_prompt = "You are an assistant that engages in extremely thorough, self-questioning reasoning. Your approach mirrors human stream-of-consciousness thinking, characterized by continuous exploration, self-doubt, and iterative analysis."
+system_prompt = ""
 prompt = "Provide detailed takeaways relevant to search keyword. Don't use words like 'transcript/video/author says' etc. Search keyword: "
 summary_prompt = "Provide detailed takeaways. Don't use words like 'transcript/video/author says' etc. "
 
